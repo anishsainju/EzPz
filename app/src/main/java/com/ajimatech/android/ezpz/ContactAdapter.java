@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ajimatech.android.ezpz.model.Contact;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +54,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
     @Override
     public void onBindViewHolder(@NonNull ContactAdapter.ContactAdapterViewHolder contactAdapterViewHolder, int i) {
         Contact contact = mContactsData.get(i);
-        Picasso.get()
+        GlideApp.with(context)
                 .load(contact.getPhotoUri())
                 .placeholder(R.drawable.ic_no_image)
                 .into(contactAdapterViewHolder.mImageView);
