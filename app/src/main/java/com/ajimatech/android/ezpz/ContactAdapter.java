@@ -58,7 +58,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
                 .load(contact.getPhotoUri())
                 .placeholder(R.drawable.ic_no_image)
                 .into(contactAdapterViewHolder.mImageView);
-        contactAdapterViewHolder.mTextView.setText(contact.getFullname());
+        contactAdapterViewHolder.mTextView.setText(contact.getFullname() + '\n' + contact.getFacebookId());
     }
 
     @Override
