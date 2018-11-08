@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 10;
     private static final String PROTOCOL_FACEBOOK = "Facebook";
+    private static final String GVOICE = "GVoice";
 
     // UI components
     @BindView(R.id.rv_contacts)
@@ -63,9 +64,7 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressLint("InlinedApi")
     private static final String SELECTION = ContactsContract.Contacts.STARRED + "= ?";
     List<Contact> mContacts = new ArrayList<>();
-    //            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-//                    ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?" :
-//                    ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?";
+
     // Defines a variable for the search string
     private String mSearchString = "1";
     // Defines the array to hold values that replace the ?
@@ -80,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRvContacts.setHasFixedSize(true);
+        //mRvContacts.addItemDecoration(new DividerItemDecoration(mRvContacts.getContext(), DividerItemDecoration.VERTICAL));
+
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
@@ -93,12 +94,6 @@ public class MainActivity extends AppCompatActivity implements
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRvContacts.setAdapter(mContactAdapter);
 
-//        Contact c1 = new Contact("Anish Sainju");
-//        Contact c2 = new Contact("Anisha Sainju");
-//        List<Contact> clist = new ArrayList<>();
-//        clist.add(c1);
-//        clist.add(c2);
-//        mContactAdapter.setContactData(clist);
         showContacts();
     }
 
@@ -138,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        //mSelectionArgs[0] = "%" + mSearchString + "%";
         // Starts the query
         return new CursorLoader(
                 this,
@@ -169,22 +163,24 @@ public class MainActivity extends AppCompatActivity implements
                 contact.setPhotoUri(photoThumbnailUri);
 
                 //  Get all phone numbers.
-                //
                 Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                         ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
                 while (phones.moveToNext()) {
                     String number = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    System.out.println("number phone " + number);
                     int type = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                     switch (type) {
-                        case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                            System.out.println("HOME phone " + number);
-                            break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                            System.out.println("MOBILE phone " + number);
+                            contact.setNumberMobile(number);
+                            break;
+                        case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                            break;
+                        case ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM:
+                            String label = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+                            if (label.equalsIgnoreCase(GVOICE)) {
+                                contact.setNumberGVoice(number);
+                            }
                             break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                            // do something with the Work number here...
                             break;
                     }
                 }
@@ -197,31 +193,15 @@ public class MainActivity extends AppCompatActivity implements
                 while (im.moveToNext()) {
 
                     int protocol = im.getInt(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
-                    System.out.println("###PROTOCOL " + protocol);
                     if (protocol == ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM) {
                         String custProtocol = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.CUSTOM_PROTOCOL));
-                        System.out.println("###CUSTOMPROTOCOL " + custProtocol);
-                        if (custProtocol.equals(PROTOCOL_FACEBOOK)) {
+                        if (custProtocol.equalsIgnoreCase(PROTOCOL_FACEBOOK)) {
                             String facebookId = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
-                            System.out.println("###DATA " + facebookId);
                             contact.setFacebookId(facebookId);
                             break; // no need to look for more of this kind. If more of this kind is present, they will be ignored.
                         }
                     }
-//                    //Types are defined in CommonDataKinds.Im.*
-//                    int imppType = im
-//                            .getInt(im
-//                                    .getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
-//                    System.out.println("###TYPE " + String.valueOf(imppType));
-//                    //Protocols are defined in CommonDataKinds.Im.*
-//                    int imppProtocol = im
-//                            .getInt(im
-//                                    .getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
-//                    System.out.println("###PROTOCOL " + String.valueOf(imppProtocol));
-//                    //and in this protocol you can check your custom value
                 }
-
-
                 mContacts.add(contact);
                 phones.close();
                 im.close();

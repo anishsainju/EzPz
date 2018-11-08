@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">EzPz</string>
     <string name="error_message">An error has occurred. Please try again.</string>
+    <string name="install_messenger">Please install Facebook Messenger</string>
+    <string name="install_hangouts_dialer">Please install Hangouts Dialer</string>
+    <string name="uri_messenger">fb-messenger://user/</string>
+    <string name="hangouts_dialer_package">com.google.android.apps.hangoutsdialer</string>
+    <string name="viber_package">com.viber.voip</string>
+    <string name="install_viber">Please install Viber</string>
 </resources>

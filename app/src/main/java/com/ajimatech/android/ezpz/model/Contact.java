@@ -4,8 +4,10 @@ public class Contact {
 
     private String fullname;
     private String photoUri;
-    private String numberUS2US;
+    private String numberMobile;
     private String facebookId;
+    private String numberViber;
+    private String numberGVoice;
 
     public Contact(String fullname) {
         this.fullname = fullname;
@@ -27,12 +29,12 @@ public class Contact {
         this.photoUri = photoUri;
     }
 
-    public String getNumberUS2US() {
-        return numberUS2US;
+    public String getNumberMobile() {
+        return numberMobile;
     }
 
-    public void setNumberUS2US(String numberUS2US) {
-        this.numberUS2US = numberUS2US;
+    public void setNumberMobile(String numberMobile) {
+        this.numberMobile = numberMobile;
     }
 
     public String getFacebookId() {
@@ -41,5 +43,21 @@ public class Contact {
 
     public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
+    }
+
+    public String getNumberViber() {
+        return numberViber;
+    }
+
+    public void setNumberViber(String numberViber) {
+        this.numberViber = numberViber;
+    }
+
+    public String getNumberGVoice() {
+        return numberGVoice;
+    }
+
+    public void setNumberGVoice(String numberGVoice) {
+        this.numberGVoice = numberGVoice;
     }
 }

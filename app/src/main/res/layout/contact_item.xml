@@ -9,18 +9,91 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:adjustViewBounds="true"
+        android:paddingLeft="2dp"
+        android:paddingTop="1dp"
+        android:paddingRight="2dp"
+        android:paddingBottom="1dp"
         android:scaleType="centerCrop"
-        android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_contact_name"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_contact_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iv_contact_photo"/>
+    <ImageButton
+        android:id="@+id/ib_call_phone"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@+id/iv_contact_photo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/call_phone" />
+
+    <ImageButton
+        android:id="@+id/ib_google_voice"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_contact_photo"
+        app:layout_constraintTop_toBottomOf="@id/ib_call_phone"
+        app:srcCompat="@drawable/call_google_voice" />
+
+    <ImageButton
+        android:id="@+id/ib_messenger"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toRightOf="@id/ib_call_phone"
+        app:layout_constraintStart_toEndOf="@+id/ib_call_phone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/facebook_messenger" />
+
+    <ImageButton
+        android:id="@+id/ib_viber"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ib_google_voice"
+        app:layout_constraintTop_toBottomOf="@+id/ib_messenger"
+        app:srcCompat="@drawable/call_viber" />
+
+    <ImageButton
+        android:id="@+id/ib_location"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@+id/ib_messenger"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/location" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        app:layout_constraintTop_toBottomOf="@id/iv_contact_photo" />
 </android.support.constraint.ConstraintLayout>
