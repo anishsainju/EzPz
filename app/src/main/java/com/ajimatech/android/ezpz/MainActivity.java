@@ -35,9 +35,7 @@ import android.widget.Toast;
 import com.ajimatech.android.ezpz.model.Contact;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private LocationManager locationManager;
 
+    private String addressToSendLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,43 +123,51 @@ public class MainActivity extends AppCompatActivity implements
 //        sendSMS();
 //        sendLocationViaSMS();
 //        permitAndSendLocationViaSMS();
+        mContactAdapter.setmOnSendLocationClickedListener(new ContactAdapter.OnSendLocationClickedListener() {
+            @Override
+            public void onSendLocationClicked(String destinationAddress) {
+                addressToSendLocation = destinationAddress;
+                permitAndSendLocationViaSMS(destinationAddress);
+            }
+        });
     }
 
     private void permitAndShowContacts() {
         // Check the SDK version and whether the permission is already granted or not.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
 //            After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-//        } else {
+        } else {
         // Android version is lesser than 6.0 or the permission is already granted.
         // Initializes the loader
-//            getLoaderManager().initLoader(0, null, this);
-//        }
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CONTACTS)) {
-            showMessageOKCancel("You need to allow access to read Contacts",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS},
-                                    PERMISSIONS_REQUEST_READ_CONTACTS);
-                        }
-                    });
-            return;
+            getLoaderManager().initLoader(0, null, this);
         }
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CONTACTS},
-                PERMISSIONS_REQUEST_READ_CONTACTS);
-        return;
+//        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CONTACTS)) {
+//            showMessageOKCancel("You need to allow access to read Contacts",
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS},
+//                                    PERMISSIONS_REQUEST_READ_CONTACTS);
+//                        }
+//                    });
+//            return;
+//        }
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CONTACTS},
+//                PERMISSIONS_REQUEST_READ_CONTACTS);
+//        return;
     }
 
-    private void sendLocation() {
+    private void sendLocation(final String destinationAddress) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_GET_LOCATION);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    mErrorMessageDisplay.setVisibility(View.VISIBLE);
-                    mErrorMessageDisplay.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+                    String message = "http://maps.google.com/maps?f=q&q=(" + location.getLatitude() + "," + location.getLongitude() + ")";
+                    // Now send via SMS
+                    sendSMS(destinationAddress, message);
                 }
 
                 @Override
@@ -181,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void sendSMS() {
+    private void sendSMS(String destinationAddress, String message) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSIONS_REQUEST_SEND_SMS);
         } else {
@@ -191,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
 //                    Toast.LENGTH_LONG).show();
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage("8146826474", null, "My first Android SMS", null, null);
+                smsManager.sendTextMessage(destinationAddress, null, message, null, null);
                 Toast.makeText(getApplicationContext(), "SMS Sent!",
                         Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -203,11 +211,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void sendLocationViaSMS() {
-        Toast.makeText(this, "Good both permissions granted", Toast.LENGTH_LONG).show();
+    private void sendLocationViaSMS(String destinationAddress) {
+//        Toast.makeText(this, "Good both permissions granted", Toast.LENGTH_LONG).show();
+        sendLocation(destinationAddress);
     }
 
-    private void permitAndSendLocationViaSMS() {
+    public void permitAndSendLocationViaSMS(String destinationAddress) {
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS}, PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS);
+//            After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            // Android version is lesser than 6.0 or the permission is already granted.
+            sendLocationViaSMS(destinationAddress);
+        }
+        /*
         List<String> permissionsNeeded = new ArrayList<String>();
 
         final List<String> permissionsList = new ArrayList<String>();
@@ -237,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
 
-        sendLocationViaSMS();
+        sendLocationViaSMS();*/
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
@@ -263,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         switch (requestCode) {
+            /*
             case PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS: {
                 Map<String, Integer> perms = new HashMap<String, Integer>();
                 // Initial
@@ -281,7 +300,14 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(MainActivity.this, R.string.permission_required_send_location_via_sms, Toast.LENGTH_SHORT)
                             .show();
                 }
-            }
+            }*/
+            case PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted
+                    sendLocationViaSMS(addressToSendLocation);
+                } else {
+                    Toast.makeText(this, R.string.permission_required_send_location_via_sms, Toast.LENGTH_LONG).show();
+                }
             break;
             case PERMISSIONS_REQUEST_READ_CONTACTS: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

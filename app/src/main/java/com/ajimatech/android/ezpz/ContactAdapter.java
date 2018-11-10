@@ -24,6 +24,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
 
     private Context context;
     private List<Contact> mContactsData = new ArrayList<>();
+    private OnSendLocationClickedListener mOnSendLocationClickedListener;
+
+    public void setmOnSendLocationClickedListener(OnSendLocationClickedListener mOnSendLocationClickedListener) {
+        this.mOnSendLocationClickedListener = mOnSendLocationClickedListener;
+    }
 
     public ContactAdapter(Context context) {
         this.context = context;
@@ -94,6 +99,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
                 }
             }
         });
+
+        contactAdapterViewHolder.mIbLocation.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mOnSendLocationClickedListener.onSendLocationClicked(contact.getNumberMobile());
+                return true;
+            }
+        });
+    }
+
+    public interface OnSendLocationClickedListener {
+        void onSendLocationClicked(String destinationAddress);
     }
 
     @NonNull
@@ -134,6 +151,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
         ImageButton mIbGVoice;
         @BindView(R.id.ib_viber)
         ImageButton mIbViber;
+        @BindView(R.id.ib_location)
+        ImageButton mIbLocation;
 
         ContactAdapterViewHolder(View view) {
             super(view);
