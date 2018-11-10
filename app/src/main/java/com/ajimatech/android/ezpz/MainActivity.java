@@ -1,17 +1,14 @@
 /**
  * Resources used:
- * https://inthecheesefactory.com/blog/things-you-need-to-know-about-android-m-permission-developer-edition/en
  */
 package com.ajimatech.android.ezpz;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,7 +19,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ajimatech.android.ezpz.model.Contact;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
 
     // Adapter for RecyclerView
     private LinearLayoutManager mLayoutManager;
@@ -118,11 +118,6 @@ public class MainActivity extends AppCompatActivity implements
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-//        sendLocation();
-
-//        sendSMS();
-//        sendLocationViaSMS();
-//        permitAndSendLocationViaSMS();
         mContactAdapter.setmOnSendLocationClickedListener(new ContactAdapter.OnSendLocationClickedListener() {
             @Override
             public void onSendLocationClicked(String destinationAddress) {
@@ -130,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements
                 permitAndSendLocationViaSMS(destinationAddress);
             }
         });
+
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
     }
 
     private void permitAndShowContacts() {
@@ -142,20 +145,6 @@ public class MainActivity extends AppCompatActivity implements
         // Initializes the loader
             getLoaderManager().initLoader(0, null, this);
         }
-//        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CONTACTS)) {
-//            showMessageOKCancel("You need to allow access to read Contacts",
-//                    new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_CONTACTS},
-//                                    PERMISSIONS_REQUEST_READ_CONTACTS);
-//                        }
-//                    });
-//            return;
-//        }
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CONTACTS},
-//                PERMISSIONS_REQUEST_READ_CONTACTS);
-//        return;
     }
 
     private void sendLocation(final String destinationAddress) {
@@ -193,10 +182,6 @@ public class MainActivity extends AppCompatActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSIONS_REQUEST_SEND_SMS);
         } else {
-//            SmsManager smsManager = SmsManager.getDefault();
-//            smsManager.sendTextMessage("8146826474", null, "My first Android SMS", null, null);
-//            Toast.makeText(getApplicationContext(), "SMS sent.",
-//                    Toast.LENGTH_LONG).show();
             try {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(destinationAddress, null, message, null, null);
@@ -212,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void sendLocationViaSMS(String destinationAddress) {
-//        Toast.makeText(this, "Good both permissions granted", Toast.LENGTH_LONG).show();
         sendLocation(destinationAddress);
     }
 
@@ -225,82 +209,12 @@ public class MainActivity extends AppCompatActivity implements
             // Android version is lesser than 6.0 or the permission is already granted.
             sendLocationViaSMS(destinationAddress);
         }
-        /*
-        List<String> permissionsNeeded = new ArrayList<String>();
-
-        final List<String> permissionsList = new ArrayList<String>();
-        if (!addPermission(permissionsList, Manifest.permission.ACCESS_FINE_LOCATION))
-            permissionsNeeded.add("GPS");
-        if (!addPermission(permissionsList, Manifest.permission.SEND_SMS))
-            permissionsNeeded.add("Send SMS");
-
-        if (permissionsList.size() > 0) {
-            if (permissionsNeeded.size() > 0) {
-                // Need Rationale
-                String message = "You need to grant access to " + permissionsNeeded.get(0);
-                for (int i = 1; i < permissionsNeeded.size(); i++)
-                    message = message + ", " + permissionsNeeded.get(i);
-                showMessageOKCancel(message,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(MainActivity.this, permissionsList.toArray(new String[permissionsList.size()]),
-                                        PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS);
-                            }
-                        });
-                return;
-            }
-            ActivityCompat.requestPermissions(this, permissionsList.toArray(new String[permissionsList.size()]),
-                    PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS);
-            return;
-        }
-
-        sendLocationViaSMS();*/
-    }
-
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }
-
-    private boolean addPermission(List<String> permissionsList, String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            permissionsList.add(permission);
-            // Check for Rationale Option
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission))
-                return false;
-        }
-        return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         switch (requestCode) {
-            /*
-            case PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS: {
-                Map<String, Integer> perms = new HashMap<String, Integer>();
-                // Initial
-                perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
-                perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
-                // Fill with results
-                for (int i = 0; i < permissions.length; i++)
-                    perms.put(permissions[i], grantResults[i]);
-                // Check for ACCESS_FINE_LOCATION
-                if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
-                    // All Permissions Granted
-                    sendLocationViaSMS();
-                } else {
-                    // Permission Denied
-                    Toast.makeText(MainActivity.this, R.string.permission_required_send_location_via_sms, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }*/
             case PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted
@@ -321,34 +235,6 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-//        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                 Permission is granted
-//                showContacts();
-//            } else {
-//                Toast.makeText(this, R.string.permission_required_read_contacts, Toast.LENGTH_LONG).show();
-//            }
-//        }
-//        else if (requestCode == PERMISSIONS_REQUEST_GET_LOCATION) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permission is granted
-//                sendLocation();
-//            } else {
-//                Toast.makeText(this, R.string.permission_required_get_location, Toast.LENGTH_LONG).show();
-//            }
-//        } else if (requestCode == PERMISSIONS_REQUEST_SEND_SMS) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permission is granted
-//                sendSMS();
-//            }
-//        } else if (requestCode == PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permissions for both Location and Send SMS are granted
-//                sendLocationViaSMS();
-//            } else {
-//                Toast.makeText(this, R.string.permission_required_send_location_via_sms, Toast.LENGTH_LONG).show();
-//            }
-//        }
     }
 
     private void showErrorMessage() {
