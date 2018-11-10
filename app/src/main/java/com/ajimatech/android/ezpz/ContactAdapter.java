@@ -100,6 +100,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
             }
         });
 
+        // Location sharing is available only when Mobile Number is available
+        setImageButtonVisibility(contact.getNumberMobile(), contactAdapterViewHolder.mIbLocation);
         contactAdapterViewHolder.mIbLocation.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -169,7 +171,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
 
     public void setContactData(List<Contact> contactsData) {
         mContactsData.clear();
-        mContactsData.addAll(contactsData);
+        if (contactsData != null)
+            mContactsData.addAll(contactsData);
         notifyDataSetChanged();
     }
 }

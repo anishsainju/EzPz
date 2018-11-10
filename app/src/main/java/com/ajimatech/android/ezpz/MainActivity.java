@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
         // Android version is lesser than 6.0 or the permission is already granted.
         // Initializes the loader
-            getLoaderManager().initLoader(0, null, this);
+            getLoaderManager().restartLoader(0, null, this);
         }
     }
 
