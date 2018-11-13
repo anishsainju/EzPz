@@ -65,7 +65,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
         contactAdapterViewHolder.mIbMessenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri uri = Uri.parse(context.getString(R.string.uri_messenger) + contact.getFacebookId()); // fb://messaging/" + facebookId);
+                Uri uri = Uri.parse(context.getString(R.string.uri_messenger) + contact.getFacebookId()); // fb://messaging/" + facebookId); // fb-messenger://user/
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 try {
                     context.startActivity(intent);

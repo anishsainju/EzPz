@@ -3,7 +3,7 @@
     <string name="error_message">An error has occurred. Please try again.</string>
     <string name="install_messenger">Please install Facebook Messenger</string>
     <string name="install_hangouts_dialer">Please install Hangouts Dialer</string>
-    <string name="uri_messenger">fb-messenger://user/</string>
+    <string name="uri_messenger">https://m.me/</string>
     <string name="hangouts_dialer_package">com.google.android.apps.hangoutsdialer</string>
     <string name="viber_package">com.viber.voip</string>
     <string name="install_viber">Please install Viber</string>
@@ -18,4 +18,6 @@
     <string name="messenger_image_button">Messenger image button</string>
     <string name="viber_image_button">Viber image button</string>
     <string name="location_image_button">Location image button</string>
+    <string name="sms_sent">SMS Sent!</string>
+    <string name="sms_failed">SMS failed, please try again later!</string>
 </resources>

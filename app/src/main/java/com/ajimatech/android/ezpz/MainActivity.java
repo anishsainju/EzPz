@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 10;
     private static final String PROTOCOL_FACEBOOK = "Facebook";
-    private static final String GVOICE = "GVoice";
+    private static final String GVOICE = "Google Voice";
+    private static final String VIBER = "Viber";
     private static final int PERMISSIONS_REQUEST_GET_LOCATION = 11;
     private static final int PERMISSIONS_REQUEST_SEND_SMS = 12;
     private static final int PERMISSIONS_REQUEST_SEND_LOCATION_VIA_SMS = 14;
@@ -100,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRvContacts.setHasFixedSize(true);
-        //mRvContacts.addItemDecoration(new DividerItemDecoration(mRvContacts.getContext(), DividerItemDecoration.VERTICAL));
-
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
@@ -127,12 +126,9 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-
         mContactAdapter.setmContactAdapterOnClickHandler(new ContactAdapter.ContactAdapterOnClickHandler() {
             @Override
             public void onClick(Contact contact) {
-//                    final Contact contact = mContacts.get(position);
-                System.out.println("##Selected contact" + contact.getFullname());
                 Intent intent = getIntent();
                 if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_PICK)) {
                     Intent intentToSend = new Intent();
@@ -140,15 +136,8 @@ public class MainActivity extends AppCompatActivity implements
                     setResult(RESULT_OK, intentToSend);
                     finish();
                 }
-//                    MainActivity.this.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            EzContactWidgetProvider.sendRefreshBroadcast(getApplicationContext(), contact);
-//                        }
-//                    });
             }
         });
-
 
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
@@ -209,11 +198,11 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(destinationAddress, null, message, null, null);
-                Toast.makeText(getApplicationContext(), "SMS Sent!",
+                Toast.makeText(getApplicationContext(), R.string.sms_sent,
                         Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(),
-                        "SMS faild, please try again later!",
+                        R.string.sms_failed,
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
@@ -297,7 +286,6 @@ public class MainActivity extends AppCompatActivity implements
                             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
                             ContactsContract.Contacts.DISPLAY_NAME));
                     String photoThumbnailUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                    System.out.println("Thumbnail uri " + photoThumbnailUri);
 
                     // Store the info we collected so far
                     Contact contact = new Contact(fullname);
@@ -319,6 +307,8 @@ public class MainActivity extends AppCompatActivity implements
                                 String label = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
                                 if (label.equalsIgnoreCase(GVOICE)) {
                                     contact.setNumberGVoice(number);
+                                } else if (label.equalsIgnoreCase(VIBER)) {
+                                    contact.setNumberViber(number);
                                 }
                                 break;
                             case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:

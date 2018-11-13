@@ -22,17 +22,14 @@ public class EzContactWidgetProvider extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int[] appWidgetIds, Contact contact) {
         for (int appWidgetId : appWidgetIds) {
-//            CharSequence widgetText = "EzPz Contact";
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.contact_widget_provider);
 
-//            Intent mainActivityIntent = new Intent(context, MainActivity.class);
             Intent contactWidgetRemoteViewsServiceIntent = new Intent(context, ContactWidgetRemoteViewsService.class);
             if (contact != null) {
                 contactWidgetRemoteViewsServiceIntent.putExtra(CONTACT_SELECTED, contact);
                 contactWidgetRemoteViewsServiceIntent.setData(Uri.fromParts("Widget", String.valueOf(appWidgetId + Math.random()), null));
 //                views.setTextViewText(R.id.appwidget_text, widgetText + ": " + contact.getFullname());
-                System.out.println("##RemoteVuew uimage " + contact.getPhotoUri());
                 views.setImageViewUri(R.id.iv_contact_photo, Uri.parse(contact.getPhotoUri()));
 
                 setIBVisibilityAndOnClickPI(contact.getNumberMobile(), views, R.id.ib_call_phone, "tel:" + contact.getNumberMobile(), Intent.ACTION_DIAL, context, null);
@@ -63,20 +60,9 @@ public class EzContactWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public static void sendRefreshBroadcast(Context context, Contact contact) {
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(CONTACT_SELECTED, contact);
-        intent.setComponent(new ComponentName(context, EzContactWidgetProvider.class));
-        context.sendBroadcast(intent);
-    }
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-//        for (int appWidgetId : appWidgetIds) {
-//            updateAppWidget(context, appWidgetManager, appWidgetId);
-//        }
     }
 
     @Override
