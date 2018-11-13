@@ -253,9 +253,10 @@ public class MainActivity extends AppCompatActivity implements
     private void showErrorMessage() {
         mRvContacts.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mErrorMessageDisplay.setText(R.string.no_contacts_to_show_msg);
     }
 
-    private void showMoviesDataView() {
+    private void showContactsDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRvContacts.setVisibility(View.VISIBLE);
     }
@@ -341,6 +342,11 @@ public class MainActivity extends AppCompatActivity implements
                 cursor.close();
             }
             mContactAdapter.setContactData(mContacts);
+            if (mContacts == null || mContacts.isEmpty()) {
+                showErrorMessage();
+            } else {
+                showContactsDataView();
+            }
         }
     }
 

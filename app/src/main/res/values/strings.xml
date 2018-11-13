@@ -20,4 +20,5 @@
     <string name="location_image_button">Location image button</string>
     <string name="sms_sent">SMS Sent!</string>
     <string name="sms_failed">SMS failed, please try again later!</string>
+    <string name="no_contacts_to_show_msg">There are no contacts to show. Please make sure the contacts you want to appear here are STARRED / marked as Favorite in your Contacts</string>
 </resources>
