@@ -20,5 +20,31 @@
     <string name="location_image_button">Location image button</string>
     <string name="sms_sent">SMS Sent!</string>
     <string name="sms_failed">SMS failed, please try again later!</string>
-    <string name="no_contacts_to_show_msg">There are no contacts to show. Please make sure the contacts you want to appear here are STARRED / marked as Favorite in your Contacts</string>
+    <string name="no_contacts_to_show_msg">There are no contacts to show. \n
+        Please make sure the contacts you want to appear here are STARRED / marked as Favorite in your Contacts</string>
+    <string name="how_to_guide">How-To Guide</string>
+    <string name="setup_steps">1. This app pulls starred contacts data from the Contacts app. So,
+        first of all, have the contacts stored on this phone. The best way is to store your contacts
+        on Google Contacts, use that Google Account on this phone, and auto-sync the contacts. \n
+        2. In the contacts app or in Google Contacts Website, upload and store the contact\'s photo.
+        It is must to have person\'s photo on the contacts for this app. Please make sure the image
+        is cropped to cover just the headshot. \n
+        3. Similarly, store the primary contact number under \'Mobile\' label.(Not \'Home\') \n
+        4. Store the contact number for Google Voice under \'Google Voice\' label. \n
+        5. Store the contact number for Viber, choose Custom label and create \'Viber\' label. \n
+        6. Under IM section, add a label \'Facebook\' and store the facebook username of the contact
+        person. \n
+        7. Most importantly, mark those contacts you want to appear in this app as STARRED, which
+        means to mark them as Favorites in your Contacts app or in Google Contacts website if you
+        are using auto-sync. \n
+        8. That\'s all.</string>
+    <string name="how_to_setup_for_ezpz">How to setup for EzPz?</string>
+    <string name="feature_notes">Feature Notes</string>
+    <string name="feature_notes_info">1. Permission to read contacts should be granted. \n
+        2. For the first time, when clicking Phone icon and Messenger icon, you might be asked which
+        app to choose saying \'Complete action using\'. For Phone icon, select Phone app and click
+        \'ALWAYS\'. For Messenger icon, select Facebook Messenger app and click \'ALWAYS\'.\n
+        3. Long click the location icon to send the current location via SMS to the selected
+        contact\'s \'Mobile\' number. The location should be turned on and permission to use
+        location and sending SMS should be granted.</string>
 </resources>
