@@ -25,9 +25,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
     private Context context;
     private List<Contact> mContactsData = new ArrayList<>();
     private OnSendLocationClickedListener mOnSendLocationClickedListener;
+    private ContactAdapterOnClickHandler mContactAdapterOnClickHandler;
 
     public void setmOnSendLocationClickedListener(OnSendLocationClickedListener mOnSendLocationClickedListener) {
         this.mOnSendLocationClickedListener = mOnSendLocationClickedListener;
+    }
+
+    public void setmContactAdapterOnClickHandler(ContactAdapterOnClickHandler mContactAdapterOnClickHandler) {
+        this.mContactAdapterOnClickHandler = mContactAdapterOnClickHandler;
     }
 
     public ContactAdapter(Context context) {
@@ -109,10 +114,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
                 return true;
             }
         });
+
+        contactAdapterViewHolder.mIvContactPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mContactAdapterOnClickHandler.onClick(contact);
+            }
+        });
     }
 
     public interface OnSendLocationClickedListener {
         void onSendLocationClicked(String destinationAddress);
+    }
+
+    public interface ContactAdapterOnClickHandler {
+        void onClick(Contact contact);
     }
 
     @NonNull

@@ -9,6 +9,7 @@ import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -125,6 +126,29 @@ public class MainActivity extends AppCompatActivity implements
                 permitAndSendLocationViaSMS(destinationAddress);
             }
         });
+
+
+        mContactAdapter.setmContactAdapterOnClickHandler(new ContactAdapter.ContactAdapterOnClickHandler() {
+            @Override
+            public void onClick(Contact contact) {
+//                    final Contact contact = mContacts.get(position);
+                System.out.println("##Selected contact" + contact.getFullname());
+                Intent intent = getIntent();
+                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_PICK)) {
+                    Intent intentToSend = new Intent();
+                    intentToSend.putExtra(Contact.SELECTED_CONTACT, contact);
+                    setResult(RESULT_OK, intentToSend);
+                    finish();
+                }
+//                    MainActivity.this.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            EzContactWidgetProvider.sendRefreshBroadcast(getApplicationContext(), contact);
+//                        }
+//                    });
+            }
+        });
+
 
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
@@ -262,70 +286,72 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        ContentResolver cr = getContentResolver();
-        try {
-            while (cursor.moveToNext()) {
-                String contactId =
-                        cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String fullname = cursor.getString(cursor.getColumnIndex(Build.VERSION.SDK_INT
-                        >= Build.VERSION_CODES.HONEYCOMB ?
-                        ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
-                        ContactsContract.Contacts.DISPLAY_NAME));
-                String photoThumbnailUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                System.out.println("Thumbnail uri " + photoThumbnailUri);
+        if (cursor != null && !cursor.isClosed()) {
+            ContentResolver cr = getContentResolver();
+            try {
+                while (cursor.moveToNext()) {
+                    String contactId =
+                            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    String fullname = cursor.getString(cursor.getColumnIndex(Build.VERSION.SDK_INT
+                            >= Build.VERSION_CODES.HONEYCOMB ?
+                            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
+                            ContactsContract.Contacts.DISPLAY_NAME));
+                    String photoThumbnailUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                    System.out.println("Thumbnail uri " + photoThumbnailUri);
 
-                // Store the info we collected so far
-                Contact contact = new Contact(fullname);
-                contact.setPhotoUri(photoThumbnailUri);
+                    // Store the info we collected so far
+                    Contact contact = new Contact(fullname);
+                    contact.setPhotoUri(photoThumbnailUri);
 
-                //  Get all phone numbers.
-                Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                while (phones.moveToNext()) {
-                    String number = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    int type = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    switch (type) {
-                        case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                            contact.setNumberMobile(number);
-                            break;
-                        case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                            break;
-                        case ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM:
-                            String label = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
-                            if (label.equalsIgnoreCase(GVOICE)) {
-                                contact.setNumberGVoice(number);
-                            }
-                            break;
-                        case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                            break;
-                    }
-                }
-
-                String[] projection = null;
-                String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?"
-                        + " AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                String[] selectionArgs = {contactId, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
-                Cursor im = cr.query(ContactsContract.Data.CONTENT_URI, projection, selection, selectionArgs, null);
-                while (im.moveToNext()) {
-
-                    int protocol = im.getInt(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
-                    if (protocol == ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM) {
-                        String custProtocol = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.CUSTOM_PROTOCOL));
-                        if (custProtocol.equalsIgnoreCase(PROTOCOL_FACEBOOK)) {
-                            String facebookId = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
-                            contact.setFacebookId(facebookId);
-                            break; // no need to look for more of this kind. If more of this kind is present, they will be ignored.
+                    //  Get all phone numbers.
+                    Cursor phones = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                    while (phones.moveToNext()) {
+                        String number = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        int type = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                        switch (type) {
+                            case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
+                                contact.setNumberMobile(number);
+                                break;
+                            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                                break;
+                            case ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM:
+                                String label = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL));
+                                if (label.equalsIgnoreCase(GVOICE)) {
+                                    contact.setNumberGVoice(number);
+                                }
+                                break;
+                            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+                                break;
                         }
                     }
+
+                    String[] projection = null;
+                    String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?"
+                            + " AND " + ContactsContract.Data.MIMETYPE + " = ?";
+                    String[] selectionArgs = {contactId, ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
+                    Cursor im = cr.query(ContactsContract.Data.CONTENT_URI, projection, selection, selectionArgs, null);
+                    while (im.moveToNext()) {
+
+                        int protocol = im.getInt(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
+                        if (protocol == ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM) {
+                            String custProtocol = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.CUSTOM_PROTOCOL));
+                            if (custProtocol.equalsIgnoreCase(PROTOCOL_FACEBOOK)) {
+                                String facebookId = im.getString(im.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+                                contact.setFacebookId(facebookId);
+                                break; // no need to look for more of this kind. If more of this kind is present, they will be ignored.
+                            }
+                        }
+                    }
+                    mContacts.add(contact);
+                    phones.close();
+                    im.close();
                 }
-                mContacts.add(contact);
-                phones.close();
-                im.close();
+            } finally {
+                cursor.close();
             }
-        } finally {
-            cursor.close();
+            mContactAdapter.setContactData(mContacts);
         }
-        mContactAdapter.setContactData(mContacts);
     }
 
     @Override

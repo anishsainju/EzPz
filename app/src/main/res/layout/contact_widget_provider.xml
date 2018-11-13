@@ -1,0 +1,58 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#09C"
+    android:columnCount="2"
+    android:padding="@dimen/widget_margin">
+
+    <ImageView
+        android:id="@+id/iv_contact_photo"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:contentDescription="@string/contact_photo"
+        android:scaleType="centerCrop" />
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="2">
+
+        <ImageButton
+            android:id="@+id/ib_call_phone"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:contentDescription="@string/call_phone_image_button"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/call_phone" />
+
+        <ImageButton
+            android:id="@+id/ib_messenger"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:contentDescription="@string/messenger_image_button"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/facebook_messenger" />
+
+        <ImageButton
+            android:id="@+id/ib_google_voice"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:contentDescription="@string/google_voice_image_button"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/call_google_voice" />
+
+        <ImageButton
+            android:id="@+id/ib_viber"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:contentDescription="@string/viber_image_button"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/call_viber" />
+    </GridLayout>
+
+
+</GridLayout>
