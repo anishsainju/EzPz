@@ -7,6 +7,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -342,6 +343,15 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                     mContacts.add(contact);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_FULLNAME, contact.getFullname());
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_PHOTOURI, contact.getPhotoUri());
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_NUMBERMOBILE, contact.getNumberMobile());
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_FACEBOOKID, contact.getFacebookId());
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_NUMBERGVOICE, contact.getNumberGVoice());
+                    contentValues.put(EzContactContract.ContactEntry.COLUMN_NUMBERVIBER, contact.getNumberViber());
+                    getContentResolver().insert(EzContactContract.ContactEntry.CONTENT_URI, contentValues);
+
                     phones.close();
                     im.close();
                 }

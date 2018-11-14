@@ -187,8 +187,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactA
 
     public void setContactData(List<Contact> contactsData) {
         mContactsData.clear();
-        if (contactsData != null)
+        if (contactsData != null) {
             mContactsData.addAll(contactsData);
+        }
         notifyDataSetChanged();
     }
+
 }
