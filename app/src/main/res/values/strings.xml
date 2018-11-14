@@ -8,10 +8,8 @@
     <string name="viber_package">com.viber.voip</string>
     <string name="install_viber">Please install Viber</string>
     <string name="permission_required_read_contacts">Permission to read contacts is required for this app to run</string>
-    <string name="permission_required_get_location">Permission to obtain location is required for this app feature</string>
     <string name="permission_required_send_location_via_sms">Both Location and Sending SMS permissions are required for this app feature</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="appwidget_text">Pick a Contact</string>
     <string name="contact_photo">Contact Photo</string>
     <string name="call_phone_image_button">Call Phone image button</string>
     <string name="google_voice_image_button">Google Voice Image button</string>

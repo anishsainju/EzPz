@@ -29,7 +29,6 @@ public class EzContactWidgetProvider extends AppWidgetProvider {
             if (contact != null) {
                 contactWidgetRemoteViewsServiceIntent.putExtra(CONTACT_SELECTED, contact);
                 contactWidgetRemoteViewsServiceIntent.setData(Uri.fromParts("Widget", String.valueOf(appWidgetId + Math.random()), null));
-//                views.setTextViewText(R.id.appwidget_text, widgetText + ": " + contact.getFullname());
                 views.setImageViewUri(R.id.iv_contact_photo, Uri.parse(contact.getPhotoUri()));
 
                 setIBVisibilityAndOnClickPI(contact.getNumberMobile(), views, R.id.ib_call_phone, "tel:" + contact.getNumberMobile(), Intent.ACTION_DIAL, context, null);
@@ -38,10 +37,6 @@ public class EzContactWidgetProvider extends AppWidgetProvider {
                 setIBVisibilityAndOnClickPI(contact.getNumberViber(), views, R.id.ib_viber, "tel:" + contact.getNumberViber(), Intent.ACTION_DIAL, context, context.getString(R.string.viber_package));
                 // Location sharing is not available via Widget
             }
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, mainActivityIntent, 0);
-//            views.setOnClickPendingIntent(R.id.iv_contact_photo, pendingIntent);
-//            views.setRemoteAdapter(R.id.appwidget_listview, contactWidgetRemoteViewsServiceIntent);
-
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

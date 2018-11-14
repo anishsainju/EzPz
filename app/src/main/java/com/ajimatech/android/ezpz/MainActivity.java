@@ -75,10 +75,7 @@ public class MainActivity extends AppCompatActivity implements
             {
                     ContactsContract.Contacts._ID,
                     ContactsContract.Contacts.LOOKUP_KEY,
-                    Build.VERSION.SDK_INT
-                            >= Build.VERSION_CODES.HONEYCOMB ?
-                            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
-                            ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
                     ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
             };
     // Defines the text expression
@@ -285,10 +282,7 @@ public class MainActivity extends AppCompatActivity implements
                 while (cursor.moveToNext()) {
                     String contactId =
                             cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    String fullname = cursor.getString(cursor.getColumnIndex(Build.VERSION.SDK_INT
-                            >= Build.VERSION_CODES.HONEYCOMB ?
-                            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
-                            ContactsContract.Contacts.DISPLAY_NAME));
+                    String fullname = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
                     String photoThumbnailUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
 
                     // Store the info we collected so far
