@@ -39,7 +39,6 @@ public class ContactDBHelper extends SQLiteOpenHelper {
                 EzContactContract.ContactEntry.COLUMN_FACEBOOKID + " TEXT, " +
                 EzContactContract.ContactEntry.COLUMN_NUMBERGVOICE + " TEXT, " +
                 EzContactContract.ContactEntry.COLUMN_NUMBERVIBER + " TEXT);";
-        System.out.println("###sql " + sql);
         sqLiteDatabase.execSQL(sql);
     }
 
