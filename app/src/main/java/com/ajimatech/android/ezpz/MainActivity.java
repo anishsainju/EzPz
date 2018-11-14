@@ -13,9 +13,12 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +42,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.adView)
     AdView mAdView;
 
+    @BindView(R.id.iv_logo)
+    ImageView ivLogo;
+
     // Adapter for RecyclerView
     private LinearLayoutManager mLayoutManager;
     private ContactAdapter mContactAdapter;
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
     // Defines the text expression
     @SuppressLint("InlinedApi")
     private static final String SELECTION = ContactsContract.Contacts.STARRED + "= ?";
-    List<Contact> mContacts = new ArrayList<>();
+    ArrayList<Contact> mContacts = new ArrayList<>();
 
     // Defines a variable for the search string
     private String mSearchString = "1";
@@ -97,9 +103,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
         ButterKnife.bind(this);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        new LoadImage(this, ivLogo).execute();
+        setSupportActionBar(myToolbar);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -371,6 +378,29 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private class LoadImage extends AsyncTask<Void, Void, Bitmap> {
+        private ImageView imageView;
+        private Context context;
+
+        public LoadImage(Context context, ImageView imageView) {
+            this.imageView = imageView;
+            this.context = context;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.ezpz);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            }
         }
     }
 }
